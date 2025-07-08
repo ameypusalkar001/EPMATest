@@ -472,7 +472,7 @@ function App() {
           <div className={sectionClasses}>
             <div className="flex items-center mb-6">
               <Briefcase className="w-6 h-6 text-purple-600 mr-3" />
-              <h2 className="text-2xl font-bold text-gray-800">Additional Information</h2>
+              <h2 className="text-2xl font-bold text-gray-800">Additional Information by Amey</h2>
             </div>
             
             <div className="space-y-6">
