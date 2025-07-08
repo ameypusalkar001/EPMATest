@@ -11,7 +11,9 @@ import {
   UserCheck,
   AlertTriangle,
   Save,
-  X
+  X,
+  Eye,
+  Users
 } from 'lucide-react';
 
 interface EmployeeData {
@@ -47,6 +49,7 @@ interface EmployeeData {
 }
 
 function App() {
+  const [submittedCandidates, setSubmittedCandidates] = useState<EmployeeData[]>([]);
   const [formData, setFormData] = useState<EmployeeData>({
     firstName: '',
     lastName: '',
@@ -82,8 +85,14 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Employee Data:', formData);
-    alert('Employee details submitted successfully!');
+    
+    // Add the current form data to the submitted candidates list
+    setSubmittedCandidates(prev => [...prev, { ...formData }]);
+    
+    // Reset the form
+    handleCancel();
+    
+    alert('Candidate details submitted successfully!');
   };
 
   const handleCancel = () => {
@@ -522,6 +531,116 @@ function App() {
             </button>
           </div>
         </form>
+
+        {/* Submitted Candidates Grid */}
+        {submittedCandidates.length > 0 && (
+          <div className={sectionClasses + " mt-8"}>
+            <div className="flex items-center mb-6">
+              <Users className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-2xl font-bold text-gray-800">Submitted Candidates</h2>
+              <span className="ml-3 bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
+                {submittedCandidates.length} candidate{submittedCandidates.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Phone</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Employee ID</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Department</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Position</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Start Date</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Employment Type</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Emergency Contact</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submittedCandidates.map((candidate, index) => (
+                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <User className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="font-medium text-gray-900">
+                            {candidate.firstName} {candidate.lastName}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <Mail className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-700">{candidate.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <Phone className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-700">{candidate.phone}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                          {candidate.employeeId}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <Building className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-700">{candidate.department}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <Briefcase className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-700">{candidate.position}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-700">
+                            {candidate.startDate ? new Date(candidate.startDate).toLocaleDateString() : '-'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs font-medium px-2 py-1 rounded capitalize ${
+                          candidate.employmentType === 'full-time' ? 'bg-green-100 text-green-800' :
+                          candidate.employmentType === 'part-time' ? 'bg-yellow-100 text-yellow-800' :
+                          candidate.employmentType === 'contract' ? 'bg-purple-100 text-purple-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {candidate.employmentType.replace('-', ' ')}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="text-sm">
+                          <div className="font-medium text-gray-900">{candidate.emergencyName}</div>
+                          <div className="text-gray-500">{candidate.emergencyPhone}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => {
+                            alert(`Candidate Details:\n\nName: ${candidate.firstName} ${candidate.lastName}\nEmail: ${candidate.email}\nPhone: ${candidate.phone}\nDepartment: ${candidate.department}\nPosition: ${candidate.position}\nEmployee ID: ${candidate.employeeId}\nStart Date: ${candidate.startDate}\nEmployment Type: ${candidate.employmentType}\nWork Location: ${candidate.workLocation}\nManager: ${candidate.manager}\nAddress: ${candidate.address}, ${candidate.city}, ${candidate.state} ${candidate.zipCode}\nEmergency Contact: ${candidate.emergencyName} (${candidate.emergencyRelationship}) - ${candidate.emergencyPhone}\nSkills: ${candidate.skills}\nNotes: ${candidate.notes}`);
+                          }}
+                          className="inline-flex items-center px-3 py-1 bg-indigo-100 text-indigo-700 text-sm font-medium rounded-md hover:bg-indigo-200 transition-colors duration-150"
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
